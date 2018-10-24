@@ -9,7 +9,7 @@ public class Develop {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		String lokasi_file = "F://TSP/artificial1.txt";
+		String lokasi_file = "F://TSP/real1.txt";
 		String baris_pertama[];        
 		String lokasi[][]=null;
 		ArrayList<String> tabu = new ArrayList<>();
@@ -47,62 +47,79 @@ public class Develop {
 
 		            
 		            perjalanan_saat_ini = baris_pertama[1];
-		            
+		            int cari_list=0;
 		            for(int day=1;day<lokasi_bandara+1;day++) {
 		            	
 		            	while(pemilihan.size()<1) {
-		            		for(int l=0;l<list_penerbangan.size();l++) {
-		            			temp=list_penerbangan.get(l).split(" ");
+			            		for(int l=0;l<list_penerbangan.size();l++) {
+			            			temp=list_penerbangan.get(l).split(" ");
+					            		if((temp[0].equals(perjalanan_saat_ini)&&Integer.parseInt(temp[2])==day) 
+					            				||(temp[0].equals(perjalanan_saat_ini)&&Integer.parseInt(temp[2])==0)) {
+					            			if(start_point) {
+					            				pemilihan.add(list_penerbangan.get(l));
+						            			jml_biaya_perhitungan = jml_biaya_perhitungan + Integer.parseInt(temp[3]);
+					            			}else {
+					            				if(fix.size()<lokasi_bandara-1)
+					            				{
+					            					for(int n=0;n<fix.size();n++) {
+						            					String [] sementara= fix.get(n).split(" ");
+						            					if(temp[1].equals(sementara[0])) {
+						            						penanda_masuk_tolak=1;
+						            						break;
+						            					}
+							            			}
+					            					if(penanda_masuk_tolak==0) {
+					            						for(int larangan=0;larangan<tabu.size();larangan++) {
+					            							String isi_tabu[] = tabu.get(larangan).split(" ");
 
-			            		
-				            		if((temp[0].equals(perjalanan_saat_ini)&&Integer.parseInt(temp[2])==day) 
-				            				||(temp[0].equals(perjalanan_saat_ini)&&Integer.parseInt(temp[2])==0)) {
-				            			
-				            			if(start_point) {
-				            				pemilihan.add(list_penerbangan.get(l));
-					            			jml_biaya_perhitungan = jml_biaya_perhitungan + Integer.parseInt(temp[3]);
-				            			}else {
-				            				if(fix.size()<lokasi_bandara-1)
-				            				{
-				            					
-				            					for(int n=0;n<fix.size();n++) {
-					            					String [] sementara= fix.get(n).split(" ");
-					            					if(temp[1].equals(sementara[0])) {
-					            						penanda_masuk_tolak=1;
-					            						break;
+					            							if(isi_tabu.length>1) {
+					            								if(perjalanan_saat_ini.equals(isi_tabu[0])||
+					            										perjalanan_saat_ini.equals(isi_tabu[1])) {
+					            									penanda_masuk_tolak=1;
+					            									break;
+					            								}
+					            							}else { 
+					            								if(perjalanan_saat_ini.equals(isi_tabu[0])) {
+					            								penanda_masuk_tolak=1;
+						            							break;
+						            							}
+						            						}
+						            					}
 					            					}
-					            						
-						            			}
-				            					if(penanda_masuk_tolak==0) {
-				            						for(int larangan=0;larangan<tabu.size();larangan++) {
-					            						if(temp[0].equals(tabu.get(larangan))) {
-					            							penanda_masuk_tolak=1;
-					            							break;
-					            						}
-					            					}
-				            					}
-				            					if(penanda_masuk_tolak==0) {
-					            					pemilihan.add(list_penerbangan.get(l));
-							            			jml_biaya_perhitungan = jml_biaya_perhitungan + Integer.parseInt(temp[3]);
+					            					if(penanda_masuk_tolak==0) {
+						            					pemilihan.add(list_penerbangan.get(l));
+								            			jml_biaya_perhitungan = jml_biaya_perhitungan + Integer.parseInt(temp[3]);
+						            				}
 					            				}
-				            				}
-				            				else 
-				            				{
-				            					if(temp[0].equals(perjalanan_saat_ini)&&temp[1].equals(baris_pertama[1])) {
-				            						pemilihan.add(list_penerbangan.get(l));
-							            			jml_biaya_perhitungan = jml_biaya_perhitungan + Integer.parseInt(temp[3]);
-				            					}
-				            				}
-				            				
-				            			}			            		
-				            		}
-			            		
-			            		penanda_masuk_tolak=0;
+					            				else 
+					            				{
+					            					if(temp[0].equals(perjalanan_saat_ini)&&temp[1].equals(baris_pertama[1])) {
+					            						pemilihan.add(list_penerbangan.get(l));
+								            			jml_biaya_perhitungan = jml_biaya_perhitungan + Integer.parseInt(temp[3]);
+					            					}
+					            				}
+					            			}			            		
+					            		}
+				            		penanda_masuk_tolak=0;
 			            	}
-		            	}
-		            	
+			            		
+			            		
+			            		if(pemilihan.size()<1) {
+			            			int akhir = fix.size()-1;
+			            			String sementara[]=fix.get(akhir).split(" ");
+//			            			System.out.println(sementara[0] + " " + sementara[1]);
+			            			tabu.remove(tabu.size()-1);
+//			            			tabu.add(sementara[0] + " " + sementara[1]);
+			            			fix.remove(akhir);
+			            			String bandara_baru[] =fix.get(akhir-1).split(" "); 
+			            			perjalanan_saat_ini = bandara_baru[1];
+				            	}
+//			            		else {
+//				            		cari_list=1;
+//				            	}
+			            		
+		            	}	
 		            	rata_biaya = (float) jml_biaya_perhitungan/pemilihan.size();
-		            	
 		            	boolean acak_nilai=true;
 		            	while(acak_nilai) {
 		            		int angka_acak = (int) (Math.random()*pemilihan.size());
@@ -124,8 +141,7 @@ public class Develop {
 		            				if(sementara.length>1) {
 		            					if(sementara[0].equals(penyimpanan_sementara[0])||
 			            						sementara[1].equals(penyimpanan_sementara[0])) {
-			            					tabu.add(sementara[0]);
-			            					tabu.add(sementara[1]);
+			            					tabu.add(sementara[0] + " "+sementara[1]);
 			            					break;
 			            				}
 		            				}else {
@@ -149,8 +165,7 @@ public class Develop {
 		            				if(sementara.length>1) {
 		            					if(sementara[0].equals(penyimpanan_sementara[0])||
 			            						sementara[1].equals(penyimpanan_sementara[0])) {
-			            					tabu.add(sementara[0]);
-			            					tabu.add(sementara[1]);
+			            					tabu.add(sementara[0] + " " +sementara[1]);
 			            					break;
 			            				}
 		            				}else {
@@ -166,9 +181,9 @@ public class Develop {
 			            	
 			            	
 		            	}
+
 		            	pemilihan.clear();
 		            	start_point=false;
-		            			            	
 		            }
 		            
 		            System.out.println(jml_biaya_total);
